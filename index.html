@@ -64,6 +64,9 @@
         .dataTables_wrapper .dataTables_length {
             margin-top: 5px;
         }
+        button.ColVis_Button, ul.ColVis_collection li {
+            white-space: normal;
+        }
     </style>
 </head>
 <body>
@@ -131,8 +134,8 @@
             </table>
         </div>
     </div>
+    <p>Graphics and design by Acton H. Gorton</p>
     <script>
-        // hold this value for modeling - remove after work completed
         var glbl_data;
         var gmo_data = {};
 
@@ -341,7 +344,6 @@
             // request data from server
             $.getJSON('biotech_petitions.json', function(data) {
 
-                // hold this value for modeling - remove after work completed
                 glbl_data = data;
 
                 // build data tables
