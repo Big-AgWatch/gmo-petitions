@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Genetically engineered crop petitions made to USDA</title>
+    <!-- Java Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js" charset="utf-8"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" charset="utf-8"></script>
+    <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" charset="utf-8"></script>
+    <script src="http://datatables.net/release-datatables/extensions/ColVis/js/dataTables.colVis.js"></script>
+    <script src="https://www.datatables.net/release-datatables/extensions/TableTools/js/dataTables.tableTools.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+    <script src="//cdn.datatables.net/responsive/1.0.6/js/dataTables.responsive.js"></script>
+    <!-- Style Sheets -->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="http://datatables.net/release-datatables/extensions/ColVis/css/dataTables.colVis.css">
+    <link rel="stylesheet" type="text/css" href="https://www.datatables.net/release-datatables/extensions/TableTools/css/dataTables.tableTools.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/responsive/1.0.6/css/dataTables.responsive.css">
+    <style>
+        .dataTables_wrapper {
+            clear: both;
+            zoom: 1;
+            font-size: 95%;
+            width: auto;
+            margin: 20px auto;
+        }
+        .chart {
+            display: block;
+            margin: auto;
+            margin-top: 60px;
+            font-size: 11px;
+        }
+        rect {
+            stroke: #eee;
+            fill: #aaa;
+            fill-opacity: .8;
+        }
+        rect.parent {
+            cursor: pointer;
+            fill: steelblue;
+        }
+        text {
+            pointer-events: none;
+        }
+        #content_wrapper {
+            width: auto;
+            margin: 0 auto;
+        }
+        .dataTables_wrapper .dataTables_length {
+            margin-top: 5px;
+        }
+        button.ColVis_Button, ul.ColVis_collection li {
+            white-space: normal;
+        }
+    </style>
+</head>
+<body>
+    <div id="content_wrapper">
+        <h1>Genetically engineered crop petitions made to USDA</h1>
+        <p>Since their introduction in the early 1990s, genetically engineered crops have rapidly grown in popularity among U.S. farmers.</p>
+        <p>But before farmers can grow these crops, the USDA's Animal and Plant Health Inspection Service must first approve petitions from the agribusinesses and other institutions that produce them.</p>
+        <p>The U.S. Food and Drug Administration, and the Environmental Protection Agency are also responsible for overseeing the implementation of GMOs in the United States.</p>
+        <br>
+        <p>To download or print the data, click the tabs to the left below.</p>
+        <p>To search petition information in the database below, use the search bar to the right. You can also sort each column by toggling the arrows the left of each column name.</p>
+        <p>To add or remove a column, click the "Show / hide columns" tab.</p>
+        <p>"Phenotype" generally describes what the crop is engineered to do. "Phenotype Description" provides more specific information, including what insects or pesticides the crops are designed to resist.</p>
+        <p><i>Source: U.S. Department of Agriculture as of May 4, 2015.</i></p>
+        <div class="dataTables_wrapper">
+            <table id="biodata_table" class="display responsive no-wrap" cellspacing="0" width="100%" style="width: 100%;">
+                <thead>
+                <tr>
+                    <th>Permit Number</th>
+                    <th>Docket Number</th>
+                    <th>Institution</th>
+                    <th>Crop</th>
+                    <th>Received Date</th>
+                    <th>Completed Date</th>
+                    <th>FR Start Date</th>
+                    <th>FR Stop Date</th>
+                    <th>Clock Stop Date</th>
+                    <th>Clock Start Date</th>
+                    <th style="width: 50px;">Issued</th>
+                    <th>Status</th>
+                    <th>CBI</th>
+                    <th>Genotypes</th>
+                    <th>Phenotype</th>
+                    <th>Phenotype Description</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Permit Number</th>
+                    <th>Docket Number</th>
+                    <th>Institution</th>
+                    <th>Crop</th>
+                    <th>Received Date</th>
+                    <th>Completed Date</th>
+                    <th>FR Start Date</th>
+                    <th>FR Stop Date</th>
+                    <th>Clock Stop Date</th>
+                    <th>Clock Start Date</th>
+                    <th>Issued</th>
+                    <th>Status</th>
+                    <th>CBI</th>
+                    <th>Genotypes</th>
+                    <th>Phenotype</th>
+                    <th>Phenotype Description</th>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <p>Design by Acton H. Gorton</p>
+    </div>
+    <script>
+        var glbl_data;
+        var gmo_data = {};
+
+        $(document).ready(function() {
+
+            // Build the DataTables table
+            function build_table(dt_data){
+                $('#biodata_table').dataTable( {
+                    "dom": 'TC<"clear">lfrtip',
+                    responsive: true,
+                    "data": dt_data.data,
+                    "aoColumns": [
+                        { "mData": "Permit Number", sDefaultContent: "" },
+                        { "mData": "Docket Number", sDefaultContent: "" },
+                        { "mData": "Institution", sDefaultContent: "" },
+                        { "mData": "Crop", sDefaultContent: "" },
+                        { "mData": "Received Date", sDefaultContent: "" },
+                        { "mData": "Completed Date", sDefaultContent: "" },
+                        { "mData": "FR Start Date", sDefaultContent: "" },
+                        { "mData": "FR Stop Date", sDefaultContent: "" },
+                        { "mData": "Clock Stop Date", sDefaultContent: "" },
+                        { "mData": "Clock Start Date", sDefaultContent: "" },
+                        { "mData": "Issued Date", sDefaultContent: "" },
+                        { "mData": "Status", sDefaultContent: "" },
+                        { "mData": "CBI", sDefaultContent: "" },
+                        { "mData": "Genotypes", sDefaultContent: "" },
+                        { "mData": "Phenotype", sDefaultContent: "" },
+                        { "mData": "Phenotype Description", sDefaultContent: "" }
+                    ],
+                    "aoColumnDefs": [{ "bVisible": false, "aTargets": [ 0, 1, 4, 5, 6, 7, 8, 9 , 12, 13] }],
+                    "aLengthMenu": [[25, 50, 75, -1], [25, 50, 75, "All"]],
+                    "iDisplayLength": 25,
+                    "tableTools": {
+                        "sSwfPath": "copy_csv_xls_pdf.swf"
+                    }
+                } );
+
+                $('table').addClass('table table-striped');
+            }
+
+            // Build treemap graphic
+            function build_graphic(viz_type, tm_data) {
+                // reorganize json data to work with graphic
+                gmo_data.name = 'Crop';
+                gmo_data.children = [];
+
+                if (viz_type === 'Crop') {
+
+                    _.each(tm_data, function (value, key) {
+                        var i = Object.keys(tm_data).indexOf(key);
+                        gmo_data.children.push({'name': key, 'children': []});
+                        crop_types = _.groupBy(value, 'Crop');
+
+                        _.each(crop_types, function (val, kee) {
+                            var ii = Object.keys(crop_types).indexOf(kee);
+                            gmo_data.children[i].children.push({'name': kee});
+                            var tt = [];
+
+                            _.each(val, function (x, y) {
+                                tt.push(x.Institution)
+                            });
+                            tt = _.uniq(tt);
+                            flower = [];
+
+                            _.each(tt, function (y) {
+                                ttt = [];
+
+                                _.each(val, function (yy, xx) {
+                                    if (y == yy.Institution) {
+                                        ttt.push(tt)
+                                    }
+                                });
+
+                                flower.push({'name': y, 'size': ttt.length})
+                            });
+
+                            gmo_data.children[i].children[ii].children = flower;
+                        })
+                    });
+
+                    gmo_data = gmo_data.children;
+                    gmo_data = gmo_data[0];
+                    gmo_data.name = "Crop";
+                }
+
+                else {
+                    _.each(tm_data, function (value, key) {
+                        var i = Object.keys(tm_data).indexOf(key);
+                        gmo_data.children.push({'name': key, 'children': []});
+                        crop_types = _.groupBy(value, 'Institution');
+
+                        _.each(crop_types, function (val, kee) {
+                            var ii = Object.keys(crop_types).indexOf(kee);
+                            gmo_data.children[i].children.push({'name': kee});
+                            var tt = [];
+
+                            _.each(val, function (x, y) {
+                                tt.push(x.Crop)
+                            });
+                            tt = _.uniq(tt);
+                            flower = [];
+
+                            _.each(tt, function (y) {
+                                ttt = [];
+
+                                _.each(val, function (yy, xx) {
+                                    if (y == yy.Crop) {
+                                        ttt.push(tt)
+                                    }
+                                });
+
+                                flower.push({'name': y, 'size': ttt.length})
+                            });
+
+                            gmo_data.children[i].children[ii].children = flower;
+                        })
+                    });
+
+                    gmo_data = gmo_data.children;
+                    gmo_data = gmo_data[0];
+                    gmo_data.name = "Institution";
+                }
+            }
+
+            // request data from server
+            $.getJSON('biotech_petitions.json', function(data) {
+
+                glbl_data = data;
+
+                // build data tables
+                build_table(glbl_data);
+            });
+        })
+    </script>
+</body>
+</html>
