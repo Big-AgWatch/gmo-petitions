@@ -9,7 +9,6 @@
     <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js" charset="utf-8"></script>
     <script src="http://datatables.net/release-datatables/extensions/ColVis/js/dataTables.colVis.js"></script>
     <script src="https://www.datatables.net/release-datatables/extensions/TableTools/js/dataTables.tableTools.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
     <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
     <script src="//cdn.datatables.net/responsive/1.0.6/js/dataTables.responsive.js"></script>
     <!-- Style Sheets -->
@@ -26,26 +25,11 @@
             width: auto;
             margin: 20px auto;
         }
-        .chart {
-            display: block;
-            margin: auto;
-            margin-top: 60px;
-            font-size: 11px;
-        }
-        rect {
-            stroke: #eee;
-            fill: #aaa;
-            fill-opacity: .8;
-        }
-        rect.parent {
-            cursor: pointer;
-            fill: steelblue;
-        }
         text {
             pointer-events: none;
         }
         #content_wrapper {
-            width: auto;
+            width: 90%;
             margin: 0 auto;
         }
         .dataTables_wrapper .dataTables_length {
@@ -69,7 +53,7 @@
         <p>"Phenotype" generally describes what the crop is engineered to do. "Phenotype Description" provides more specific information, including what insects or pesticides the crops are designed to resist.</p>
         <p><i>Source: U.S. Department of Agriculture as of May 4, 2015.</i></p>
         <div class="dataTables_wrapper">
-            <table id="biodata_table" class="display responsive no-wrap" cellspacing="0" width="100%" style="width: 100%;">
+            <table id="biodata_table" class="display responsive no-wrap" cellspacing="0" style="height: 100%; width: 95%;">
                 <thead>
                 <tr>
                     <th>Permit Number</th>
@@ -155,96 +139,9 @@
                 $('table').addClass('table table-striped');
             }
 
-            // Build treemap graphic
-            function build_graphic(viz_type, tm_data) {
-                // reorganize json data to work with graphic
-                gmo_data.name = 'Crop';
-                gmo_data.children = [];
-
-                if (viz_type === 'Crop') {
-
-                    _.each(tm_data, function (value, key) {
-                        var i = Object.keys(tm_data).indexOf(key);
-                        gmo_data.children.push({'name': key, 'children': []});
-                        crop_types = _.groupBy(value, 'Crop');
-
-                        _.each(crop_types, function (val, kee) {
-                            var ii = Object.keys(crop_types).indexOf(kee);
-                            gmo_data.children[i].children.push({'name': kee});
-                            var tt = [];
-
-                            _.each(val, function (x, y) {
-                                tt.push(x.Institution)
-                            });
-                            tt = _.uniq(tt);
-                            flower = [];
-
-                            _.each(tt, function (y) {
-                                ttt = [];
-
-                                _.each(val, function (yy, xx) {
-                                    if (y == yy.Institution) {
-                                        ttt.push(tt)
-                                    }
-                                });
-
-                                flower.push({'name': y, 'size': ttt.length})
-                            });
-
-                            gmo_data.children[i].children[ii].children = flower;
-                        })
-                    });
-
-                    gmo_data = gmo_data.children;
-                    gmo_data = gmo_data[0];
-                    gmo_data.name = "Crop";
-                }
-
-                else {
-                    _.each(tm_data, function (value, key) {
-                        var i = Object.keys(tm_data).indexOf(key);
-                        gmo_data.children.push({'name': key, 'children': []});
-                        crop_types = _.groupBy(value, 'Institution');
-
-                        _.each(crop_types, function (val, kee) {
-                            var ii = Object.keys(crop_types).indexOf(kee);
-                            gmo_data.children[i].children.push({'name': kee});
-                            var tt = [];
-
-                            _.each(val, function (x, y) {
-                                tt.push(x.Crop)
-                            });
-                            tt = _.uniq(tt);
-                            flower = [];
-
-                            _.each(tt, function (y) {
-                                ttt = [];
-
-                                _.each(val, function (yy, xx) {
-                                    if (y == yy.Crop) {
-                                        ttt.push(tt)
-                                    }
-                                });
-
-                                flower.push({'name': y, 'size': ttt.length})
-                            });
-
-                            gmo_data.children[i].children[ii].children = flower;
-                        })
-                    });
-
-                    gmo_data = gmo_data.children;
-                    gmo_data = gmo_data[0];
-                    gmo_data.name = "Institution";
-                }
-            }
-
             // request data from server
             $.getJSON('biotech_petitions.json', function(data) {
-
                 glbl_data = data;
-
-                // build data tables
                 build_table(glbl_data);
             });
         })
@@ -254,10 +151,8 @@
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
         ga('create', 'UA-16215284-1', 'auto');
         ga('send', 'pageview');
-
     </script>
 </body>
 </html>
