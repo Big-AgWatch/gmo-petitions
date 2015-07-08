@@ -22,7 +22,6 @@
             clear: both;
             zoom: 1;
             font-size: 95%;
-            width: 1120px;
             margin: 20px auto;
         }
         .chart {
@@ -48,7 +47,7 @@
         }
 
         #content_wrapper {
-            width: 1120px;
+            width: 100%;
             margin: 0 auto;
         }
 
@@ -69,18 +68,30 @@
     </style>
 </head>
 <body>
-    <div id="content_wrapper">
-        <h1>Genetically engineered crop petitions made to USDA</h1>
-        <p>Since their introduction in the early 1990s, genetically engineered crops have rapidly grown in popularity among U.S. farmers.</p>
-        <p>But before farmers can grow these crops, the USDA's Animal and Plant Health Inspection Service must first approve petitions from the agribusinesses and other institutions that produce them.</p>
-        <p>The U.S. Food and Drug Administration, and the Environmental Protection Agency are also responsible for overseeing the implementation of GMOs in the United States.</p>
-        <p>The graphic below breaks down all genetically engineered crop petitions filed with USDA.</p>
-        <p>To see the breakdown by crop, select "Crop" in the "Choose information to see" window.</p>
-        <p>To see the breakdown by company, choose "Institution."</p>
-        <p>Click on a box to zoom in.</p>
-        <p>The number in parentheses (#) represents the number of petitions filed with the USDA.</p>
-        <p>Larger boxes represent more petitions; small boxes represent fewer petitions.</p>
-        <p><i>Source: U.S. Department of Agriculture as of May 4, 2015</i></p>
+    <div class="container">
+        <div class="row">
+            <h1>Genetically engineered crop petitions made to USDA</h1>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <p>Since their introduction in the early 1990s, genetically engineered crops have rapidly grown in popularity among U.S. farmers.</p>
+                <p>But before farmers can grow these crops, the USDA's Animal and Plant Health Inspection Service must first approve petitions from the agribusinesses and other institutions that produce them.</p>
+                <p>The U.S. Food and Drug Administration, and the Environmental Protection Agency are also responsible for overseeing the implementation of GMOs in the United States.</p>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4">
+                <p>The graphic below breaks down all genetically engineered crop petitions filed with USDA.</p>
+                <p>To see the breakdown by crop, select "Crop" in the "Choose information to see" window.</p>
+                <p>To see the breakdown by company, choose "Institution."</p>
+                <p>Click on a box to zoom in.</p>
+                <p>The number in parentheses (#) represents the number of petitions filed with the USDA.</p>
+                <p>Larger boxes represent more petitions; small boxes represent fewer petitions.</p>
+            </div>
+            <div class="col-sm-4 col-md-4 col-lg-4" style="border: 1px solid #AAA;">
+                <h3>Related Content</h3>
+                <p>Check out our story...</p>
+                <p>Follow us on Facebook</p>
+                <p>Follow us on Twitter</p>
+            </div>
+            <p><i>Source: U.S. Department of Agriculture as of May 4, 2015</i></p>
+        </div>
         <div class="treemap_wrapper">
             <form style="float: right; margin: 10px 30px;">
                 <b>Choose information to see:</b>
@@ -98,7 +109,7 @@
         <p>"Phenotype" generally describes what the crop is engineered to do. "Phenotype Description" provides more specific information, including what insects or pesticides the crops are designed to resist.</p>
         <p><i>Source: U.S. Department of Agriculture as of May 4, 2015.</i></p>
         <div class="dataTables_wrapper">
-            <table id="biodata_table" class="display responsive no-wrap" cellspacing="0" width="100%" style="width: 100%;">
+            <table id="biodata_table" class="display responsive no-wrap" cellspacing="0">
                 <thead>
                 <tr>
                     <th>Permit Number</th>
@@ -146,21 +157,15 @@
     <script>
         var glbl_data;
         var gmo_data = {};
-
         $(document).ready(function() {
-
             // set default viz type
             viz_type = $( ".viz_selector option:selected" ).text();
-
             $( ".viz_selector" ).change(function() {
                 console.log('changed');
                 $('.treemap_wrapper div').remove();
                 viz_type = $( ".viz_selector option:selected" ).text();
                 build_graphic(viz_type, glbl_data);
             });
-
-
-
             // Build the DataTables table
             function build_table(dt_data){
                 $('#biodata_table').dataTable( {
@@ -192,134 +197,112 @@
                         "sSwfPath": "copy_csv_xls_pdf.swf"
                     }
                 } );
-
                 $('table').addClass('table table-striped');
             }
-
             // Build treemap graphic
             function build_graphic(viz_type, tm_data){
                 // reorganize json data to work with graphic
                 gmo_data.name = 'Crop';
                 gmo_data.children = [];
-
                 if (viz_type === 'Crop') {
-
                     _.each(tm_data, function (value, key) {
                         var i = Object.keys(tm_data).indexOf(key);
                         gmo_data.children.push({'name': key, 'children': []});
                         crop_types = _.groupBy(value, 'Crop');
-
                         _.each(crop_types, function (val, kee) {
                             var ii = Object.keys(crop_types).indexOf(kee);
                             gmo_data.children[i].children.push({'name': kee});
                             var tt = [];
-
                             _.each(val, function (x, y) {
                                 tt.push(x.Institution)
                             });
                             tt = _.uniq(tt);
                             flower = [];
-
                             _.each(tt, function (y) {
                                 ttt = [];
-
                                 _.each(val, function (yy, xx) {
                                     if (y == yy.Institution) {
                                         ttt.push(tt)
                                     }
                                 });
-
                                 flower.push({'name': y, 'size': ttt.length})
                             });
-
                             gmo_data.children[i].children[ii].children = flower;
                         })
                     });
-
                     gmo_data = gmo_data.children;
                     gmo_data = gmo_data[0];
                     gmo_data.name = "Crop";
                 }
-
                 else {
                     _.each(tm_data, function (value, key){
                         var i = Object.keys(tm_data).indexOf(key);
                         gmo_data.children.push( {'name': key, 'children': []} );
                         crop_types = _.groupBy(value, 'Institution');
-
                         _.each(crop_types, function(val, kee){
                             var ii = Object.keys(crop_types).indexOf(kee);
                             gmo_data.children[i].children.push( {'name': kee} );
                             var tt = [];
-
                             _.each(val, function(x, y){
                                 tt.push(x.Crop)
                             });
                             tt = _.uniq(tt);
                             flower = [];
-
                             _.each(tt, function(y){
                                 ttt = [];
-
                                 _.each(val, function(yy, xx){
                                     if (y == yy.Crop){
                                         ttt.push(tt)
                                     }
                                 });
-
                                 flower.push({'name': y, 'size': ttt.length})
                             });
-
                             gmo_data.children[i].children[ii].children = flower;
                         })
                     });
-
                     gmo_data = gmo_data.children;
                     gmo_data = gmo_data[0];
                     gmo_data.name = "Institution";
                 }
-
-//                console.log(JSON.stringify(gmo_data));
-
                 // create the graphic with d3
-                var w = 1120,
-                        h = 1000,
-                        x = d3.scale.linear().range([0, w]),
-                        y = d3.scale.linear().range([0, h]);
+                var w = 1150,
+                    h = 1000,
+                    x = d3.scale.linear().range([0, w]),
+                    y = d3.scale.linear().range([0, h]);
 
                 var vis = d3.select(".treemap_wrapper").append("div")
-                        .attr("class", "chart")
-                        .style("width", w + "px")
-                        .style("height", h + "px")
-                        .append("svg:svg")
-                        .attr("width", w)
-                        .attr("height", h);
+                    .attr("class", "chart")
+                    .style("width", w + "px")
+                    .style("height", h + "px")
+                    .append("svg:svg")
+                    .attr("width", w)
+                    .attr("height", h);
 
                 var partition = d3.layout.partition()
-                        .value(function(d) { return d.size; });
+                    .value(function(d) { return d.size; });
 
                 var g = vis.selectAll("g")
-                        .data(partition.nodes(gmo_data))
-                        .enter().append("svg:g")
-                        .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
-                        .on("click", click);
+                    .data(partition.nodes(gmo_data))
+                    .enter().append("svg:g")
+                    .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+                    .on("click", click);
 
                 var kx = w / gmo_data.dx,
-                        ky = h / 1;
+                    ky = h / 1;
 
                 g.append("svg:rect")
-                        .attr("width", gmo_data.dy * kx)
-                        .attr("height", function(d) { return d.dx * ky; })
-                        .attr("class", function(d) { return d.children ? "parent" : "child"; });
+                    .attr("width", gmo_data.dy * kx)
+                    .attr("height", function(d) { return d.dx * ky; })
+                    .attr("class", function(d) { return d.children ? "parent" : "child"; });
 
                 g.append("svg:text")
-                        .attr("transform", transform)
-                        .attr("dy", ".35em")
-                        .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0;})
-                        .text(function(d) { text = d.name + ' (' + d.value + ') '; return text; });
+                    .attr("transform", transform)
+                    .attr("dy", ".35em")
+                    .style("opacity", function(d) { return d.dx * ky > 12 ? 1 : 0;})
+                    .text(function(d) { text = d.name + ' (' + d.value + ') '; return text; });
 
                 d3.select(window)
-                        .on("click", function() { click(gmo_data); });
+                    .on("click", function() { click(gmo_data); });
 
                 function click(d) {
                     if (!d.children) return;
@@ -367,10 +350,8 @@
                     (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
                 m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
         })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
         ga('create', 'UA-16215284-1', 'auto');
         ga('send', 'pageview');
-
     </script>
 </body>
 </html>
